@@ -3,7 +3,15 @@
         <button
                 v-if="field.last != resourceId"
                 @click="reorderResource('down')"
-                class="cursor-pointer text-70 hover:text-primary mr-3"
+                :disabled="isReadonly"
+                class="mr-3"
+                v-bind:title="isReadonly ? ('Order by ' + field.name + ' to enable.') : ''"
+                v-bind:class="{
+                    'hover:text-primary': !isReadonly,
+                    'cursor-pointer': !isReadonly,
+                    'text-70': !isReadonly,
+                    'text-50': isReadonly,
+                }"
         >
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +32,14 @@
         <button
                 v-if="field.first != resourceId"
                 @click="reorderResource('up')"
-                class="cursor-pointer text-70 hover:text-primary"
+                :disabled="isReadonly"
+                v-bind:title="isReadonly ? ('Order by ' + field.name + ' to enable.') : ''"
+                v-bind:class="{
+                    'hover:text-primary': !isReadonly,
+                    'cursor-pointer': !isReadonly,
+                    'text-70': !isReadonly,
+                    'text-50': isReadonly,
+                }"
         >
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -54,6 +69,12 @@
             },
             parentList() {
                 return this.$parent.$parent.$parent.$parent.$parent.$parent;
+            },
+            /**
+             * Determine if the field is set to readonly.
+             */
+            isReadonly() {
+                return this.field.readonly || _.get(this.field, 'extraAttributes.readonly');
             }
         },
         methods: {
